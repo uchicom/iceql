@@ -79,4 +79,48 @@ public class QueryJoinCondition<T, A> {
         join.addConditionToken(new Condition<A>(x, y, CompareType.EQUAL));
         return query;
     }
+
+    public QueryJoin<T> isAnd(boolean y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(byte y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(short y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(int y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(long y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(float y) {
+        return addPrimitiveAnd(y);
+    }
+
+    public QueryJoin<T> isAnd(double y) {
+        return addPrimitiveAnd(y);
+    }
+
+    @SuppressWarnings("unchecked")
+    private QueryJoin<T> addPrimitiveAnd(Object o) {
+        A alias = query.getPrimitiveAliasByValue((A) o);
+        if (alias == null) {
+            join.addConditionToken(new Condition<A>(x, (A) o, CompareType.EQUAL));
+        } else {
+            join.addConditionToken(new Condition<A>(x, alias, CompareType.EQUAL));
+        }
+        return new QueryJoin<T>(query, join);
+    }
+
+    public QueryJoin<T> isAnd(A y) {
+        join.addConditionToken(new Condition<A>(x, y, CompareType.EQUAL));
+        return new QueryJoin<T>(query, join);
+    }
 }

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of Joins.
@@ -100,6 +101,23 @@ public class JoinTest {
         List<UserId> notes = db.from(u).leftJoin(n).on(u.id).is(n.userId).where(u.id).is(4).select();
         assertEquals(1, notes.size());
         assertEquals(4, notes.get(0).id);
+    }
+
+    @Test
+    public void testCompoundJoin() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(u.name).is("Dick")
+                .where(u.id).is(2).or(u.id).is(1);
+
+        List<UserId> users = q.selectDistinct();
+        assertEquals(1, users.size());
+        assertEquals(2, users.get(0).id);
+        assertTrue(q.toSQL().contains("AND"));
     }
 
     @Test

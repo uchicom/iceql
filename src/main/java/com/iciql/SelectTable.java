@@ -77,8 +77,11 @@ class SelectTable<T> {
         appendSQL(stat);
         if (!joinConditions.isEmpty()) {
             stat.appendSQL(" ON ");
-            for (Token token : joinConditions) {
-                token.appendSQL(stat, q);
+            for (int i = 0; i < joinConditions.size(); i++) {
+                if (i > 0) {
+                    stat.appendSQL("AND ");
+                }
+                joinConditions.get(i).appendSQL(stat, q);
                 stat.appendSQL(" ");
             }
         }
