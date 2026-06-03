@@ -32,6 +32,7 @@ import com.iciql.test.models.DefaultValuesModel;
 import com.iciql.test.models.EnumModels.EnumIdModel;
 import com.iciql.test.models.EnumModels.EnumOrdinalModel;
 import com.iciql.test.models.EnumModels.EnumStringModel;
+import com.iciql.test.models.EnumModels.MultipleEnumFieldsModel;
 import com.iciql.test.models.MultipleBoolsModel;
 import com.iciql.test.models.Order;
 import com.iciql.test.models.PrimitivesModel;
@@ -232,7 +233,7 @@ public class IciqlSuite {
         db.dropTable(SupportedTypes.class);
         db.dropTable(JoinTest.UserId.class);
         db.dropTable(JoinTest.UserNote.class);
-        db.dropTable(EnumsTest.BadEnums.class);
+        db.dropTable(MultipleEnumFieldsModel.class);
         db.dropTable(MultipleBoolsModel.class);
         db.dropTable(ProductAnnotationOnlyWithForeignKey.class);
         db.dropTable(CategoryAnnotationOnly.class);

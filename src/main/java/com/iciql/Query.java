@@ -330,7 +330,6 @@ public class Query<T> {
     }
 
     public <A> UpdateColumnSet<T, A> set(A field) {
-        from.getAliasDefinition().checkMultipleEnums(field);
         return new UpdateColumnSet<T, A>(this, field);
     }
 
@@ -637,7 +636,6 @@ public class Query<T> {
      * @return a query condition to continue building the condition
      */
     public <A> QueryCondition<T, A> where(A x) {
-        from.getAliasDefinition().checkMultipleEnums(x);
         return new QueryCondition<T, A>(this, x);
     }
 
@@ -766,7 +764,6 @@ public class Query<T> {
     }
 
     public Query<T> orderBy(Object expr) {
-        from.getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(this, expr, false, false, false);
         addOrderBy(e);
         return this;
@@ -781,7 +778,6 @@ public class Query<T> {
 
     public Query<T> orderBy(Object... expressions) {
         for (Object expr : expressions) {
-            from.getAliasDefinition().checkMultipleEnums(expr);
             OrderExpression<T> e = new OrderExpression<T>(this, expr, false, false, false);
             addOrderBy(e);
         }
@@ -864,7 +860,6 @@ public class Query<T> {
     }
 
     public Query<T> groupBy(Object expr) {
-        from.getAliasDefinition().checkMultipleEnums(expr);
         groupByExpressions.add(expr);
         return this;
     }
