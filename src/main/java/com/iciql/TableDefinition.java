@@ -1060,8 +1060,7 @@ public class TableDefinition<T> {
         }
     }
 
-    void initSelectObject(SelectTable<T> table, Object obj, Map<Object, SelectColumn<T>> map, boolean reuse) {
-        Map<Class<?>, Integer> enumUsage = new HashMap<>();
+    void initSelectObject(SelectTable<T> table, Object obj, Map<Object, SelectColumn<T>> map, Map<Class<?>, Integer> enumUsage, boolean reuse) {
         for (FieldDefinition def : fields) {
             Object value;
             if (!reuse) {

@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -216,6 +217,56 @@ public class EnumsTest {
 
         result = db.from(m).where(m.fromTree).is(Tree.BIRCH).and(m.toTree).is(Tree.WALNUT).selectFirst();
         assertEquals(3, result.id.intValue());
+    }
+
+    @Test
+    public void testEnumJoinSameEnumType() {
+        // Two joined tables share the same Tree enum type.
+        // EnumIdModel (ENUMID encoding: PINE=10) and EnumStringModel (NAME encoding: PINE='PINE').
+        // eim has PINE→id=1, OAK→id=2.
+        // esm has trees reversed: OAK→id=1, PINE→id=2.
+        // Filtering on eim.tree must use eim's column (ENUMID encoding),
+        // not esm's column (NAME encoding). Without the fix, both joined tables
+        // share Tree.PINE as alias, esm overwrites eim in aliasMap, and
+        // filtering on eim.tree would silently use esm's column.
+        Db db2 = IciqlSuite.openNewDb();
+        db2.insertAll(Arrays.asList(
+                new EnumIdModel(1, Tree.PINE, Genus.PINUS),
+                new EnumIdModel(2, Tree.OAK, Genus.QUERCUS)));
+        db2.insertAll(Arrays.asList(
+                new EnumStringModel(1, Tree.OAK, Genus.QUERCUS),
+                new EnumStringModel(2, Tree.PINE, Genus.PINUS)));
+
+        final EnumIdModel eim = new EnumIdModel();
+        final EnumStringModel esm = new EnumStringModel();
+
+        // filter on eim.tree (FROM table, ENUMID encoding) should return id=1
+        List<EnumJoin> result = db2.from(eim)
+                .innerJoin(esm).on(eim.id).is(esm.id)
+                .where(eim.tree()).is(Tree.PINE)
+                .select(new EnumJoin() {{
+                    id = eim.id;
+                    genus = esm.genus();
+                }});
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).id.intValue());
+        assertEquals(Genus.QUERCUS, result.get(0).genus);
+
+        // filter on esm.tree (JOIN table, NAME encoding) should return id=2
+        final EnumIdModel eim2 = new EnumIdModel();
+        final EnumStringModel esm2 = new EnumStringModel();
+        List<EnumJoin> result2 = db2.from(eim2)
+                .innerJoin(esm2).on(eim2.id).is(esm2.id)
+                .where(esm2.tree()).is(Tree.PINE)
+                .select(new EnumJoin() {{
+                    id = eim2.id;
+                    genus = esm2.genus();
+                }});
+        assertEquals(1, result2.size());
+        assertEquals(2, result2.get(0).id.intValue());
+        assertEquals(Genus.PINUS, result2.get(0).genus);
+
+        db2.close();
     }
 
     @Test
