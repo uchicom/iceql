@@ -51,6 +51,7 @@ public class Query<T> {
     private int conditionDepth = 0;
     private ArrayList<SelectTable<T>> joins = Utils.newArrayList();
     private final IdentityHashMap<Object, SelectColumn<T>> aliasMap = Utils.newIdentityHashMap();
+    private final HashMap<Class<?>, Integer> enumUsage = new HashMap<>();
     private ArrayList<OrderExpression<T>> orderByList = Utils.newArrayList();
     private ArrayList<Object> groupByExpressions = Utils.newArrayList();
     private long limit;
@@ -72,7 +73,7 @@ public class Query<T> {
         Query<T> query = new Query<T>(db);
         TableDefinition<T> def = (TableDefinition<T>) db.define(alias.getClass());
         query.from = new SelectTable<T>(db, query, alias, false);
-        def.initSelectObject(query.from, alias, query.aliasMap, false);
+        def.initSelectObject(query.from, alias, query.aliasMap, query.enumUsage, false);
         return query;
     }
 
@@ -81,7 +82,7 @@ public class Query<T> {
         Query<T> query = new Query<T>(db);
         TableDefinition<T> def = (TableDefinition<T>) db.define(alias.getClass());
         query.from = new SelectTable<T>(db, query, alias, false);
-        def.initSelectObject(query.from, alias, query.aliasMap, true);
+        def.initSelectObject(query.from, alias, query.aliasMap, query.enumUsage, true);
         return query;
     }
 
@@ -784,6 +785,11 @@ public class Query<T> {
         return this;
     }
 
+    public Query<T> orderByDesc(boolean field) {
+        from.getAliasDefinition().checkMultipleBooleans();
+        return orderByDescPrimitive(field);
+    }
+
     public Query<T> orderByDesc(byte field) {
         return orderByDescPrimitive(field);
     }
@@ -1116,7 +1122,7 @@ public class Query<T> {
     private <A> QueryJoin<T> join(A alias, boolean outerJoin) {
         TableDefinition<T> def = (TableDefinition<T>) db.define(alias.getClass());
         SelectTable<T> join = new SelectTable(db, this, alias, outerJoin);
-        def.initSelectObject(join, alias, aliasMap, false);
+        def.initSelectObject(join, alias, aliasMap, enumUsage, false);
         joins.add(join);
         return new QueryJoin(this, join);
     }

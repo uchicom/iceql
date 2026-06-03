@@ -450,6 +450,11 @@ public class QueryWhere<T> {
         return this;
     }
 
+    private QueryWhere<T> orderByDescPrimitive(Object field) {
+        query.orderByDescPrimitive(field);
+        return this;
+    }
+
     public QueryWhere<T> orderBy(Object field) {
         query.orderBy(field);
         return this;
@@ -477,6 +482,35 @@ public class QueryWhere<T> {
         OrderExpression<T> e = new OrderExpression<T>(query, expr, false, false, true);
         query.addOrderBy(e);
         return this;
+    }
+
+    public QueryWhere<T> orderByDesc(boolean field) {
+        query.getFrom().getAliasDefinition().checkMultipleBooleans();
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(byte field) {
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(short field) {
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(int field) {
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(long field) {
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(float field) {
+        return orderByDescPrimitive(field);
+    }
+
+    public QueryWhere<T> orderByDesc(double field) {
+        return orderByDescPrimitive(field);
     }
 
     public QueryWhere<T> orderByDesc(Object expr) {

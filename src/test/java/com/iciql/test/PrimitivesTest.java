@@ -117,6 +117,27 @@ public class PrimitivesTest {
     }
 
     @Test
+    public void testOrderByDescBoolean() {
+        Db db = IciqlSuite.openNewDb();
+
+        List<PrimitivesModel> models = PrimitivesModel.getList();
+        db.insertAll(models);
+
+        PrimitivesModel p = new PrimitivesModel();
+
+        // verify orderByDesc(boolean) works as a column reference, not a literal
+        List<PrimitivesModel> list = db.from(p).orderByDesc(p.myBoolean).select();
+        assertEquals(models.size(), list.size());
+
+        // verify QueryWhere orderByDesc with primitive works
+        List<PrimitivesModel> filtered = db.from(p).where(p.myLong).exceeds(5L).orderByDesc(p.myLong).select();
+        assertEquals(5, filtered.size());
+        assertEquals("[10, 9, 8, 7, 6]", filtered.toString());
+
+        db.close();
+    }
+
+    @Test
     public void testPrimitiveGroupByCount() {
         Db db = IciqlSuite.openNewDb();
 
