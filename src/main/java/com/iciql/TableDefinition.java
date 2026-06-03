@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -547,29 +548,6 @@ public class TableDefinition<T> {
         }
     }
 
-    void checkMultipleEnums(Object o) {
-        if (o == null) {
-            return;
-        }
-        Class<?> clazz = o.getClass();
-        if (!clazz.isEnum()) {
-            return;
-        }
-
-        int fieldCount = 0;
-        for (FieldDefinition fieldDef : fields) {
-            Class<?> targetType = fieldDef.field.getType();
-            if (clazz.equals(targetType)) {
-                fieldCount++;
-            }
-        }
-
-        if (fieldCount > 1) {
-            throw new IciqlException(
-                    "Can not explicitly reference {0} because there are {1} {0} fields in your model class!",
-                    clazz.getSimpleName(), fieldCount);
-        }
-    }
 
     /**
      * Optionally truncates strings to the maximum length and converts
@@ -1060,17 +1038,48 @@ public class TableDefinition<T> {
     }
 
     private void initObject(Object obj, Map<Object, FieldDefinition> map) {
+        Map<Class<?>, Integer> enumUsage = new HashMap<>();
         for (FieldDefinition def : fields) {
-            Object newValue = def.initWithNewObject(obj);
+            Object newValue;
+            Class<?> fieldType = def.field.getType();
+            if (fieldType.isEnum()) {
+                Object[] constants = fieldType.getEnumConstants();
+                int index = enumUsage.getOrDefault(fieldType, 0);
+                if (index >= constants.length) {
+                    throw new IciqlException(
+                            "Cannot map field {0}.{1}: not enough enum constants in {2} to ensure unique mapping.",
+                            clazz.getName(), def.field.getName(), fieldType.getName());
+                }
+                newValue = constants[index];
+                def.setValue(obj, newValue);
+                enumUsage.put(fieldType, index + 1);
+            } else {
+                newValue = def.initWithNewObject(obj);
+            }
             map.put(newValue, def);
         }
     }
 
     void initSelectObject(SelectTable<T> table, Object obj, Map<Object, SelectColumn<T>> map, boolean reuse) {
+        Map<Class<?>, Integer> enumUsage = new HashMap<>();
         for (FieldDefinition def : fields) {
             Object value;
             if (!reuse) {
-                value = def.initWithNewObject(obj);
+                Class<?> fieldType = def.field.getType();
+                if (fieldType.isEnum()) {
+                    Object[] constants = fieldType.getEnumConstants();
+                    int index = enumUsage.getOrDefault(fieldType, 0);
+                    if (index >= constants.length) {
+                        throw new IciqlException(
+                                "Cannot map field {0}.{1}: not enough enum constants in {2} to ensure unique mapping.",
+                                clazz.getName(), def.field.getName(), fieldType.getName());
+                    }
+                    value = constants[index];
+                    def.setValue(obj, value);
+                    enumUsage.put(fieldType, index + 1);
+                } else {
+                    value = def.initWithNewObject(obj);
+                }
             } else {
                 value = def.getValue(obj);
             }

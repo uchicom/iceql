@@ -225,4 +225,33 @@ public abstract class EnumModels {
         public Integer id;
         public Genus genus;
     }
+
+    @IQTable
+    public static class MultipleEnumFieldsModel {
+
+        @IQColumn(primaryKey = true)
+        public Integer id;
+
+        @IQColumn
+        public Tree fromTree;
+
+        @IQColumn
+        public Tree toTree;
+
+        public MultipleEnumFieldsModel() {
+        }
+
+        public MultipleEnumFieldsModel(int id, Tree fromTree, Tree toTree) {
+            this.id = id;
+            this.fromTree = fromTree;
+            this.toTree = toTree;
+        }
+
+        public static List<MultipleEnumFieldsModel> createList() {
+            return Arrays.asList(
+                    new MultipleEnumFieldsModel(1, Tree.PINE, Tree.OAK),
+                    new MultipleEnumFieldsModel(2, Tree.OAK, Tree.BIRCH),
+                    new MultipleEnumFieldsModel(3, Tree.BIRCH, Tree.WALNUT));
+        }
+    }
 }

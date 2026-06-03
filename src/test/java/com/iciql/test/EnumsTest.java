@@ -23,6 +23,7 @@ import com.iciql.test.models.EnumModels.EnumIdModel;
 import com.iciql.test.models.EnumModels.EnumJoin;
 import com.iciql.test.models.EnumModels.EnumOrdinalModel;
 import com.iciql.test.models.EnumModels.EnumStringModel;
+import com.iciql.test.models.EnumModels.MultipleEnumFieldsModel;
 import com.iciql.test.models.EnumModels.Genus;
 import com.iciql.test.models.EnumModels.Tree;
 import org.junit.After;
@@ -198,18 +199,42 @@ public class EnumsTest {
     }
 
     @Test
-    public void testMultipleEnumInstances() {
-        BadEnums b = new BadEnums();
+    public void testMultipleEnumFields() {
+        db.insertAll(MultipleEnumFieldsModel.createList());
+
+        MultipleEnumFieldsModel m = new MultipleEnumFieldsModel();
+
+        MultipleEnumFieldsModel result = db.from(m).where(m.fromTree).is(Tree.PINE).selectFirst();
+        assertEquals(1, result.id.intValue());
+        assertEquals(Tree.PINE, result.fromTree);
+        assertEquals(Tree.OAK, result.toTree);
+
+        result = db.from(m).where(m.toTree).is(Tree.BIRCH).selectFirst();
+        assertEquals(2, result.id.intValue());
+        assertEquals(Tree.OAK, result.fromTree);
+        assertEquals(Tree.BIRCH, result.toTree);
+
+        result = db.from(m).where(m.fromTree).is(Tree.BIRCH).and(m.toTree).is(Tree.WALNUT).selectFirst();
+        assertEquals(3, result.id.intValue());
+    }
+
+    @Test
+    public void testTooManyEnumFields() {
+        TooManyEnumFields t = new TooManyEnumFields();
         try {
-            db.from(b).where(b.tree1).is(Tree.BIRCH).and(b.tree2).is(Tree.MAPLE).getSQL();
-            assertTrue("Failed to detect multiple Tree fields?!", false);
+            db.from(t).where(t.tree1).is(Tree.PINE).getSQL();
+            assertTrue("Expected IciqlException for exhausted enum constants", false);
         } catch (IciqlException e) {
-            assertTrue(e.getMessage(), e.getMessage().startsWith("Can not explicitly reference Tree"));
+            assertTrue(e.getMessage(), e.getMessage().contains("not enough enum constants"));
         }
     }
 
-    public static class BadEnums {
-        Tree tree1 = Tree.BIRCH;
-        Tree tree2 = Tree.MAPLE;
+    public static class TooManyEnumFields {
+        Tree tree1;
+        Tree tree2;
+        Tree tree3;
+        Tree tree4;
+        Tree tree5;
+        Tree tree6;
     }
 }

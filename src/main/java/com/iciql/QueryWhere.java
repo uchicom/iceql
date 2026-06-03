@@ -124,7 +124,6 @@ public class QueryWhere<T> {
      * @return a query condition to continue building the condition
      */
     public <A> QueryCondition<T, A> and(A x) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(x);
         query.addConditionToken(ConditionAndOr.AND);
         return new QueryCondition<T, A>(query, x);
     }
@@ -223,7 +222,6 @@ public class QueryWhere<T> {
      * @return a query condition to continue building the condition
      */
     public <A> QueryCondition<T, A> or(A x) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(x);
         query.addConditionToken(ConditionAndOr.OR);
         return new QueryCondition<T, A>(query, x);
     }
@@ -453,7 +451,6 @@ public class QueryWhere<T> {
     }
 
     public QueryWhere<T> orderBy(Object field) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(field);
         query.orderBy(field);
         return this;
     }
@@ -471,35 +468,30 @@ public class QueryWhere<T> {
     }
 
     public QueryWhere<T> orderByNullsFirst(Object expr) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(query, expr, false, true, false);
         query.addOrderBy(e);
         return this;
     }
 
     public QueryWhere<T> orderByNullsLast(Object expr) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(query, expr, false, false, true);
         query.addOrderBy(e);
         return this;
     }
 
     public QueryWhere<T> orderByDesc(Object expr) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(query, expr, true, false, false);
         query.addOrderBy(e);
         return this;
     }
 
     public QueryWhere<T> orderByDescNullsFirst(Object expr) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(query, expr, true, true, false);
         query.addOrderBy(e);
         return this;
     }
 
     public QueryWhere<T> orderByDescNullsLast(Object expr) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(expr);
         OrderExpression<T> e = new OrderExpression<T>(query, expr, true, false, true);
         query.addOrderBy(e);
         return this;
@@ -576,7 +568,6 @@ public class QueryWhere<T> {
     }
 
     public QueryWhere<T> groupBy(Object field) {
-        query.getFrom().getAliasDefinition().checkMultipleEnums(field);
         query.groupBy(field);
         return this;
     }
