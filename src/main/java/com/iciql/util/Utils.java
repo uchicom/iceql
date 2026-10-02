@@ -191,6 +191,8 @@ public class Utils {
             return (T) new java.sql.Timestamp(COUNTER.getAndIncrement()).toLocalDateTime();
         } else if (clazz == java.time.ZonedDateTime.class) {
             return (T) new java.sql.Timestamp(COUNTER.getAndIncrement()).toInstant().atZone(java.time.ZoneId.systemDefault());
+        } else if (clazz == java.time.YearMonth.class) {
+            return (T) java.time.YearMonth.now().plusMonths(COUNTER.getAndIncrement());
         } else if (clazz == byte[].class) {
             COUNTER.getAndIncrement();
             return (T) new byte[0];
@@ -275,6 +277,11 @@ public class Utils {
                 }
             }
             return o.toString();
+        }
+
+        // convert from String to YearMonth
+        if (targetType == java.time.YearMonth.class && o instanceof String) {
+            return java.time.YearMonth.parse((String) o);
         }
 
         if (Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {

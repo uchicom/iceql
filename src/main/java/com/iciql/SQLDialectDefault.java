@@ -508,6 +508,9 @@ public class SQLDialectDefault implements SQLDialect {
                     value = null;
                 } else if (Clob.class.isAssignableFrom(o.getClass())) {
                     value = Utils.convert(o, String.class);
+                    if (targetType == java.time.YearMonth.class) {
+                        value = Utils.convert(value, targetType);
+                    }
                 } else if (Blob.class.isAssignableFrom(o.getClass())) {
                     value = Utils.convert(o, byte[].class);
                 } else {
@@ -546,6 +549,8 @@ public class SQLDialectDefault implements SQLDialect {
             return LITERAL + ((java.time.LocalDateTime)o).format(DATETIME_FORMATTER) + LITERAL;
         } else if (o instanceof java.time.ZonedDateTime) {
             return LITERAL + ((java.time.ZonedDateTime)o).format(DATETIME_FORMATTER) + LITERAL;
+        } else if (o instanceof java.time.YearMonth) {
+            return LITERAL + o.toString() + LITERAL;
         }
         return o.toString();
     }

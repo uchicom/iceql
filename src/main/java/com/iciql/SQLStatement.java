@@ -169,6 +169,10 @@ public class SQLStatement {
 
     private void setValue(PreparedStatement prep, int parameterIndex, Object x) {
         try {
+            if (x instanceof java.time.YearMonth) {
+                // YearMonth is stored as VARCHAR
+                x = x.toString();
+            }
             prep.setObject(parameterIndex, x);
         } catch (SQLException e) {
             IciqlException ix = new IciqlException(e, "error setting parameter {0} as {1}", parameterIndex, x
