@@ -66,6 +66,7 @@ class ModelUtils {
         m.put(java.time.ZonedDateTime.class, "TIMESTAMP");
         m.put(java.time.LocalDate.class, "DATE");
         m.put(java.time.LocalTime.class, "TIME");
+        m.put(java.time.YearMonth.class, "VARCHAR");
         m.put(byte[].class, "BLOB");
         m.put(UUID.class, "UUID");
 
@@ -204,6 +205,10 @@ class ModelUtils {
         for (Class<?> clazz : SUPPORTED_TYPES.keySet()) {
             if (clazz.isPrimitive()) {
                 // do not map from SQL TYPE to primitive type
+                continue;
+            }
+            if (clazz == java.time.YearMonth.class) {
+                // YearMonth is stored as VARCHAR, do not map VARCHAR back to it
                 continue;
             }
             if (SUPPORTED_TYPES.get(clazz).equalsIgnoreCase(sqlType)) {
