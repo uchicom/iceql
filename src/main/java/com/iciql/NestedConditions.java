@@ -69,6 +69,14 @@ public abstract class NestedConditions<T> {
             return where.close();
         }
 
+        protected <Q, Z> QueryWhere<T> andExists(SubQuery<Q, Z> q) {
+            return where.andExists(q);
+        }
+
+        protected <Q, Z> QueryWhere<T> andNotExists(SubQuery<Q, Z> q) {
+            return where.andNotExists(q);
+        }
+
     }
 
     public static class Or<T> extends NestedConditions<T> {
@@ -119,6 +127,14 @@ public abstract class NestedConditions<T> {
             where.orOpen();
             where.query.addConditionToken(conditions.where.query);
             return where.close();
+        }
+
+        protected <Q, Z> QueryWhere<T> orExists(SubQuery<Q, Z> q) {
+            return where.orExists(q);
+        }
+
+        protected <Q, Z> QueryWhere<T> orNotExists(SubQuery<Q, Z> q) {
+            return where.orNotExists(q);
         }
 
     }

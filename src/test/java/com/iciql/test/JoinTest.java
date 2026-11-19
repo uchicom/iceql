@@ -17,6 +17,7 @@
 package com.iciql.test;
 
 import com.iciql.Db;
+import com.iciql.NestedConditions;
 import com.iciql.Iciql.IQColumn;
 import com.iciql.Iciql.IQTable;
 import com.iciql.Query;
@@ -289,6 +290,46 @@ public class JoinTest {
         } else {
             assertEquals("SELECT * FROM UserId WHERE id in (SELECT userId FROM UserNote WHERE userId > 0 )", q.toSQL());
         }
+    }
+
+    @Test
+    public void testSubQueryNotInExists() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        List<UserId> none = db.from(u).where(u.id).notIn(db.from(n).where(n.userId).exceeds(0).subQuery(n.userId)).select();
+        assertEquals(1, none.size());
+        assertEquals(4, none.get(0).id);
+
+        List<UserId> ex = db.from(u).whereExists(db.from(n).where(n.userId).exceeds(0).subQuery(n.userId)).select();
+        assertEquals(4, ex.size());
+
+        List<UserId> notEx = db.from(u).whereNotExists(db.from(n).where(n.userId).exceeds(0).subQuery(n.userId)).select();
+        assertEquals(0, notEx.size());
+
+        List<UserId> mixed = db.from(u).where(u.id).exceeds(0)
+                .andNotExists(db.from(n).where(n.userId).exceeds(1000).subQuery(n.userId)).select();
+        assertEquals(4, mixed.size());
+
+        List<UserId> orEx = db.from(u).where(u.id).is(1)
+                .orNotExists(db.from(n).where(n.userId).exceeds(0).subQuery(n.userId)).select();
+        assertEquals(1, orEx.size());
+
+        // nested conditions (String field, primitives are not supported in nested conditions)
+        final Db database = db;
+        final UserNote m = new UserNote();
+        final UserId u2 = new UserId();
+        List<UserNote> nestedAnd = db.from(m).where(new NestedConditions.And<UserNote>(database, m) {{
+            and(m.text).is("D");
+            andExists(database.from(u2).where(u2.id).exceeds(0).subQuery(u2.id));
+        }}).select();
+        assertEquals(1, nestedAnd.size());
+
+        List<UserNote> nestedOr = db.from(m).where(new NestedConditions.Or<UserNote>(database, m) {{
+            or(m.text).is("D");
+            orNotExists(database.from(u2).where(u2.id).exceeds(0).subQuery(u2.id));
+        }}).select();
+        assertEquals(1, nestedOr.size());
     }
 
     @Test

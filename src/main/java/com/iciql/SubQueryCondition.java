@@ -23,17 +23,41 @@ package com.iciql;
  */
 
 class SubQueryCondition<A, Y, Z> implements Token {
+    enum Type {
+        IN, NOT_IN, EXISTS, NOT_EXISTS
+    }
+
     A x;
     SubQuery<Y, Z> subquery;
+    Type type;
 
     SubQueryCondition(A x, SubQuery<Y, Z> subquery) {
+        this(x, subquery, Type.IN);
+    }
+
+    SubQueryCondition(A x, SubQuery<Y, Z> subquery, Type type) {
         this.x = x;
         this.subquery = subquery;
+        this.type = type;
     }
 
     public <T> void appendSQL(SQLStatement stat, Query<T> query) {
-        query.appendSQL(stat, null, x);
-        stat.appendSQL(" in (");
+        switch (type) {
+            case EXISTS:
+                stat.appendSQL("exists (");
+                break;
+            case NOT_EXISTS:
+                stat.appendSQL("not exists (");
+                break;
+            case NOT_IN:
+                query.appendSQL(stat, null, x);
+                stat.appendSQL(" not in (");
+                break;
+            default:
+                query.appendSQL(stat, null, x);
+                stat.appendSQL(" in (");
+                break;
+        }
         subquery.appendSQL(stat);
         stat.appendSQL(")");
     }
