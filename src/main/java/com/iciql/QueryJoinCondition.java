@@ -17,6 +17,7 @@
 
 package com.iciql;
 
+import com.iciql.util.Utils;
 
 /**
  * This class represents a query with join and an incomplete condition.
@@ -78,6 +79,26 @@ public class QueryJoinCondition<T, A> {
     public Query<T> is(A y) {
         join.addConditionToken(new Condition<A>(x, y, CompareType.EQUAL));
         return query;
+    }
+
+    @SafeVarargs
+    public final Query<T> noneOf(A... a) {
+        return noneOf(Utils.newArrayIterable(a));
+    }
+
+    public Query<T> noneOf(Iterable<A> i) {
+        join.addConditionToken(new Condition<A>(x, i, CompareType.NOT_IN));
+        return query;
+    }
+
+    @SafeVarargs
+    public final QueryJoin<T> noneOfAnd(A... a) {
+        return noneOfAnd(Utils.newArrayIterable(a));
+    }
+
+    public QueryJoin<T> noneOfAnd(Iterable<A> i) {
+        join.addConditionToken(new Condition<A>(x, i, CompareType.NOT_IN));
+        return new QueryJoin<T>(query, join);
     }
 
     public QueryJoin<T> isAnd(boolean y) {

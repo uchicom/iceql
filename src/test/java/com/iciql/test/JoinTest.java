@@ -121,6 +121,32 @@ public class JoinTest {
     }
 
     @Test
+    public void testJoinNoneOf() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        // user 1 only has notes A, D, G so it must not be joined
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).noneOf("A", "D", "G")
+                .where(u.id).exceeds(0);
+        List<UserId> users = q.selectDistinct();
+        assertEquals(2, users.size());
+        assertTrue(q.toSQL().contains("NOT IN"));
+
+        // Iterable and chained variants
+        List<UserId> users2 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).noneOfAnd(Arrays.asList("A", "D", "G"))
+                .on(n.text).noneOf(Arrays.asList("B", "E", "H"))
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(1, users2.size());
+        assertEquals(3, users2.get(0).id);
+    }
+
+    @Test
     public void testSubQuery() throws Exception {
         final UserId u = new UserId();
         final UserNote n = new UserNote();
