@@ -148,6 +148,47 @@ public class JoinTest {
     }
 
     @Test
+    public void testJoinIsNullIsNotNull() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        // no note text is null: nothing joins
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNull()
+                .where(u.id).exceeds(0);
+        assertEquals(0, q.selectDistinct().size());
+        assertTrue(q.toSQL().contains("IS NULL"));
+
+        // all note texts are not null: all users join
+        QueryWhere<UserId> q2 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNotNull()
+                .where(u.id).exceeds(0);
+        assertEquals(3, q2.selectDistinct().size());
+        assertTrue(q2.toSQL().contains("IS NOT NULL"));
+
+        // chained variants
+        List<UserId> users3 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNotNullAnd()
+                .on(n.text).isNull()
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(0, users3.size());
+
+        List<UserId> users4 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNullAnd()
+                .on(n.text).isNotNull()
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(0, users4.size());
+    }
+
+    @Test
     public void testJoinNoneOf() throws Exception {
         final UserId u = new UserId();
         final UserNote n = new UserNote();
