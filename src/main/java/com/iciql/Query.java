@@ -57,6 +57,21 @@ public class Query<T> {
     private long limit;
     private long offset;
 
+    Query(Query<T> q) {
+        this.db = q.db;
+        this.from = q.from;
+        this.conditions = q.conditions;
+        this.updateColumnDeclarations = q.updateColumnDeclarations;
+        this.conditionDepth = q.conditionDepth;
+        this.joins = q.joins;
+        this.aliasMap.putAll(q.aliasMap);
+        this.enumUsage.putAll(q.enumUsage);
+        this.orderByList = q.orderByList;
+        this.groupByExpressions = q.groupByExpressions;
+        this.limit = q.limit;
+        this.offset = q.offset;
+    }
+
     private Query(Db db) {
         this.db = db;
     }

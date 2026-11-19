@@ -121,6 +121,33 @@ public class JoinTest {
     }
 
     @Test
+    public void testJoinAndChain() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).is(n.userId)
+                .and(n.text).noneOf("A", "D", "G")
+                .where(u.id).exceeds(0);
+        List<UserId> users = q.selectDistinct();
+        assertEquals(2, users.size());
+        String sql = q.toSQL();
+        assertTrue(sql, sql.contains("NOT IN"));
+        assertTrue(sql, sql.matches("(?s).* ON .* AND .*NOT IN.*"));
+
+        // chain further conditions, then keep using the query
+        List<UserId> users2 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).is(n.userId)
+                .and(n.text).isNot("A")
+                .and(u.name).is("Dick")
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(1, users2.size());
+        assertEquals(2, users2.get(0).id);
+    }
+
+    @Test
     public void testJoinOneOf() throws Exception {
         final UserId u = new UserId();
         final UserNote n = new UserNote();
