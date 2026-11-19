@@ -702,6 +702,16 @@ public class Query<T> {
         return new QueryWhere<T>(this);
     }
 
+    public <Q, Z> QueryWhere<T> whereExists(SubQuery<Q, Z> q) {
+        addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.EXISTS));
+        return new QueryWhere<T>(this);
+    }
+
+    public <Q, Z> QueryWhere<T> whereNotExists(SubQuery<Q, Z> q) {
+        addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.NOT_EXISTS));
+        return new QueryWhere<T>(this);
+    }
+
     public Query<T> where(And<T> conditions) {
         whereTrue();
         addConditionToken(conditions.where.query);

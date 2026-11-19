@@ -140,6 +140,30 @@ public class QueryWhere<T> {
         return close();
     }
 
+    public <Q, Z> QueryWhere<T> andExists(SubQuery<Q, Z> q) {
+        query.addConditionToken(ConditionAndOr.AND);
+        query.addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.EXISTS));
+        return this;
+    }
+
+    public <Q, Z> QueryWhere<T> andNotExists(SubQuery<Q, Z> q) {
+        query.addConditionToken(ConditionAndOr.AND);
+        query.addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.NOT_EXISTS));
+        return this;
+    }
+
+    public <Q, Z> QueryWhere<T> orExists(SubQuery<Q, Z> q) {
+        query.addConditionToken(ConditionAndOr.OR);
+        query.addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.EXISTS));
+        return this;
+    }
+
+    public <Q, Z> QueryWhere<T> orNotExists(SubQuery<Q, Z> q) {
+        query.addConditionToken(ConditionAndOr.OR);
+        query.addConditionToken(new SubQueryCondition<Object, Q, Z>(null, q, SubQueryCondition.Type.NOT_EXISTS));
+        return this;
+    }
+
     public QueryWhere<T> andOpen() {
         return open(ConditionAndOr.AND);
     }

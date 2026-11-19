@@ -41,6 +41,11 @@ public class QueryCondition<T, A> {
         return new QueryWhere<T>(query);
     }
 
+    public <Q, Z> QueryWhere<T> notIn(SubQuery<Q, Z> q) {
+        query.addConditionToken(new SubQueryCondition<A, Q, Z>(x, q, SubQueryCondition.Type.NOT_IN));
+        return new QueryWhere<T>(query);
+    }
+
     public QueryWhere<T> oneOf(A... a) {
         return oneOf(Utils.newArrayIterable(a));
     }
