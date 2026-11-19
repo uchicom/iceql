@@ -169,9 +169,27 @@ public class SQLStatement {
 
     private void setValue(PreparedStatement prep, int parameterIndex, Object x) {
         try {
-            if (x instanceof java.time.YearMonth) {
-                // YearMonth is stored as VARCHAR
+            if (x instanceof java.time.YearMonth || x instanceof java.time.OffsetTime
+                    || x instanceof java.time.MonthDay || x instanceof java.time.Duration) {
+                // stored as VARCHAR
                 x = x.toString();
+            } else if (x instanceof java.time.Year) {
+                // stored as INT
+                x = ((java.time.Year) x).getValue();
+            } else if (x instanceof java.time.Instant) {
+                // stored as the UTC wall-clock time
+                x = java.sql.Timestamp.valueOf(
+                        java.time.LocalDateTime.ofInstant((java.time.Instant) x, java.time.ZoneOffset.UTC));
+            } else if (x instanceof java.time.LocalDate) {
+                x = java.sql.Date.valueOf((java.time.LocalDate) x);
+            } else if (x instanceof java.time.LocalTime) {
+                x = java.sql.Time.valueOf((java.time.LocalTime) x);
+            } else if (x instanceof java.time.LocalDateTime) {
+                x = java.sql.Timestamp.valueOf((java.time.LocalDateTime) x);
+            } else if (x instanceof java.time.OffsetDateTime) {
+                x = java.sql.Timestamp.from(((java.time.OffsetDateTime) x).toInstant());
+            } else if (x instanceof java.time.ZonedDateTime) {
+                x = java.sql.Timestamp.from(((java.time.ZonedDateTime) x).toInstant());
             }
             prep.setObject(parameterIndex, x);
         } catch (SQLException e) {

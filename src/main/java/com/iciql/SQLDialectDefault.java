@@ -508,7 +508,7 @@ public class SQLDialectDefault implements SQLDialect {
                     value = null;
                 } else if (Clob.class.isAssignableFrom(o.getClass())) {
                     value = Utils.convert(o, String.class);
-                    if (targetType == java.time.YearMonth.class) {
+                    if (targetType != String.class) {
                         value = Utils.convert(value, targetType);
                     }
                 } else if (Blob.class.isAssignableFrom(o.getClass())) {
@@ -548,8 +548,18 @@ public class SQLDialectDefault implements SQLDialect {
         } else if (o instanceof java.time.LocalDateTime) {
             return LITERAL + ((java.time.LocalDateTime)o).format(DATETIME_FORMATTER) + LITERAL;
         } else if (o instanceof java.time.ZonedDateTime) {
-            return LITERAL + ((java.time.ZonedDateTime)o).format(DATETIME_FORMATTER) + LITERAL;
-        } else if (o instanceof java.time.YearMonth) {
+            return LITERAL + ((java.time.ZonedDateTime)o).withZoneSameInstant(java.time.ZoneId.systemDefault())
+                    .format(DATETIME_FORMATTER) + LITERAL;
+        } else if (o instanceof java.time.OffsetDateTime) {
+            return LITERAL + ((java.time.OffsetDateTime)o).atZoneSameInstant(java.time.ZoneId.systemDefault())
+                    .format(DATETIME_FORMATTER) + LITERAL;
+        } else if (o instanceof java.time.Instant) {
+            return LITERAL + java.time.LocalDateTime.ofInstant((java.time.Instant)o, java.time.ZoneOffset.UTC)
+                    .format(DATETIME_FORMATTER) + LITERAL;
+        } else if (o instanceof java.time.Year) {
+            return String.valueOf(((java.time.Year)o).getValue());
+        } else if (o instanceof java.time.YearMonth || o instanceof java.time.OffsetTime
+                || o instanceof java.time.MonthDay || o instanceof java.time.Duration) {
             return LITERAL + o.toString() + LITERAL;
         }
         return o.toString();

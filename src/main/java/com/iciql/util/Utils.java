@@ -193,6 +193,18 @@ public class Utils {
             return (T) new java.sql.Timestamp(COUNTER.getAndIncrement()).toInstant().atZone(java.time.ZoneId.systemDefault());
         } else if (clazz == java.time.YearMonth.class) {
             return (T) java.time.YearMonth.now().plusMonths(COUNTER.getAndIncrement());
+        } else if (clazz == java.time.Instant.class) {
+            return (T) java.time.Instant.ofEpochMilli(COUNTER.getAndIncrement());
+        } else if (clazz == java.time.OffsetDateTime.class) {
+            return (T) java.time.Instant.ofEpochMilli(COUNTER.getAndIncrement()).atZone(java.time.ZoneId.systemDefault()).toOffsetDateTime();
+        } else if (clazz == java.time.OffsetTime.class) {
+            return (T) java.time.OffsetTime.of(LocalTime.ofNanoOfDay(COUNTER.getAndIncrement()), java.time.ZoneOffset.UTC);
+        } else if (clazz == java.time.Year.class) {
+            return (T) java.time.Year.of((int) (COUNTER.getAndIncrement() % 100000));
+        } else if (clazz == java.time.MonthDay.class) {
+            return (T) java.time.MonthDay.from(java.time.LocalDate.ofEpochDay(COUNTER.getAndIncrement()));
+        } else if (clazz == java.time.Duration.class) {
+            return (T) java.time.Duration.ofMillis(COUNTER.getAndIncrement());
         } else if (clazz == byte[].class) {
             COUNTER.getAndIncrement();
             return (T) new byte[0];
@@ -282,6 +294,39 @@ public class Utils {
         // convert from String to YearMonth
         if (targetType == java.time.YearMonth.class && o instanceof String) {
             return java.time.YearMonth.parse((String) o);
+        }
+
+        // convert from String to OffsetTime, MonthDay, Duration
+        if (o instanceof String) {
+            if (targetType == java.time.OffsetTime.class) {
+                return java.time.OffsetTime.parse((String) o);
+            } else if (targetType == java.time.MonthDay.class) {
+                return java.time.MonthDay.parse((String) o);
+            } else if (targetType == java.time.Duration.class) {
+                return java.time.Duration.parse((String) o);
+            }
+        }
+
+        // convert from number to Year
+        if (targetType == java.time.Year.class && o instanceof Number) {
+            return java.time.Year.of(((Number) o).intValue());
+        }
+
+        // Instant is stored as the UTC wall-clock time of a TIMESTAMP
+        if (targetType == java.time.Instant.class && o instanceof java.sql.Timestamp) {
+            return ((java.sql.Timestamp) o).toLocalDateTime().toInstant(java.time.ZoneOffset.UTC);
+        }
+        if (targetType == java.time.Instant.class && o instanceof Number) {
+            return java.time.Instant.ofEpochMilli(((Number) o).longValue());
+        }
+        // OffsetDateTime is stored as the system default zone wall-clock time of a TIMESTAMP
+        if (targetType == java.time.OffsetDateTime.class && o instanceof Date) {
+            return java.time.Instant.ofEpochMilli(((Date) o).getTime()).atZone(java.time.ZoneId.systemDefault())
+                    .toOffsetDateTime();
+        }
+        if (targetType == java.time.OffsetDateTime.class && o instanceof Number) {
+            return java.time.Instant.ofEpochMilli(((Number) o).longValue()).atZone(java.time.ZoneId.systemDefault())
+                    .toOffsetDateTime();
         }
 
         if (Boolean.class.isAssignableFrom(targetType) || boolean.class.isAssignableFrom(targetType)) {
