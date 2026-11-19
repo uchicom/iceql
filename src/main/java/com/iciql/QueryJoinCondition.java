@@ -184,4 +184,92 @@ public class QueryJoinCondition<T, A> {
         join.addConditionToken(new Condition<A>(x, y, CompareType.EQUAL));
         return new QueryJoin<T>(query, join);
     }
+
+    public Query<T> isNot(boolean y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(byte y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(short y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(int y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(long y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(float y) {
+        return addPrimitiveNot(y);
+    }
+
+    public Query<T> isNot(double y) {
+        return addPrimitiveNot(y);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Query<T> addPrimitiveNot(Object o) {
+        A alias = query.getPrimitiveAliasByValue((A) o);
+        if (alias == null) {
+            join.addConditionToken(new Condition<A>(x, (A) o, CompareType.NOT_EQUAL));
+        } else {
+            join.addConditionToken(new Condition<A>(x, alias, CompareType.NOT_EQUAL));
+        }
+        return query;
+    }
+
+    public Query<T> isNot(A y) {
+        join.addConditionToken(new Condition<A>(x, y, CompareType.NOT_EQUAL));
+        return query;
+    }
+
+    public QueryJoin<T> isNotAnd(boolean y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(byte y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(short y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(int y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(long y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(float y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    public QueryJoin<T> isNotAnd(double y) {
+        return addPrimitiveNotAnd(y);
+    }
+
+    @SuppressWarnings("unchecked")
+    private QueryJoin<T> addPrimitiveNotAnd(Object o) {
+        A alias = query.getPrimitiveAliasByValue((A) o);
+        if (alias == null) {
+            join.addConditionToken(new Condition<A>(x, (A) o, CompareType.NOT_EQUAL));
+        } else {
+            join.addConditionToken(new Condition<A>(x, alias, CompareType.NOT_EQUAL));
+        }
+        return new QueryJoin<T>(query, join);
+    }
+
+    public QueryJoin<T> isNotAnd(A y) {
+        join.addConditionToken(new Condition<A>(x, y, CompareType.NOT_EQUAL));
+        return new QueryJoin<T>(query, join);
+    }
 }
