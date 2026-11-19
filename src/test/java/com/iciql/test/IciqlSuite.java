@@ -97,7 +97,7 @@ import java.util.Map;
         RuntimeQueryTest.class, SamplesTest.class, UpdateTest.class, UpgradesTest.class, JoinTest.class,
         UUIDTest.class, ViewsTest.class, ForeignKeyTest.class, TransactionTest.class, NestedConditionsTest.class,
         DataTypeAdapterTest.class, ProductDaoTest.class, BitwiseConditionTest.class,
-        YearMonthTest.class})
+        YearMonthTest.class, JavaTimeTest.class})
 public class IciqlSuite {
     private final static File baseFolder = new File(System.getProperty("user.dir"), "/testdbs");
     private static final TestDb[] TEST_DBS = {

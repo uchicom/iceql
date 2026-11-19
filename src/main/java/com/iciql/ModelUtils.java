@@ -67,6 +67,12 @@ class ModelUtils {
         m.put(java.time.LocalDate.class, "DATE");
         m.put(java.time.LocalTime.class, "TIME");
         m.put(java.time.YearMonth.class, "VARCHAR");
+        m.put(java.time.Instant.class, "TIMESTAMP");
+        m.put(java.time.OffsetDateTime.class, "TIMESTAMP");
+        m.put(java.time.OffsetTime.class, "VARCHAR");
+        m.put(java.time.Year.class, "INT");
+        m.put(java.time.MonthDay.class, "VARCHAR");
+        m.put(java.time.Duration.class, "VARCHAR");
         m.put(byte[].class, "BLOB");
         m.put(UUID.class, "UUID");
 
@@ -207,8 +213,10 @@ class ModelUtils {
                 // do not map from SQL TYPE to primitive type
                 continue;
             }
-            if (clazz == java.time.YearMonth.class) {
-                // YearMonth is stored as VARCHAR, do not map VARCHAR back to it
+            if (clazz == java.time.YearMonth.class || clazz == java.time.OffsetTime.class
+                    || clazz == java.time.MonthDay.class || clazz == java.time.Duration.class
+                    || clazz == java.time.Year.class) {
+                // these types are stored as VARCHAR/INT, do not map the SQL type back to them
                 continue;
             }
             if (SUPPORTED_TYPES.get(clazz).equalsIgnoreCase(sqlType)) {
@@ -220,7 +228,9 @@ class ModelUtils {
         if (mappedClass != null) {
             if (mappedClass.equals(java.util.Date.class) || mappedClass.equals(java.sql.Timestamp.class) ||
                 mappedClass.equals(java.time.LocalDateTime.class) ||
-                mappedClass.equals(java.time.ZonedDateTime.class)) {
+                mappedClass.equals(java.time.ZonedDateTime.class) ||
+                mappedClass.equals(java.time.Instant.class) ||
+                mappedClass.equals(java.time.OffsetDateTime.class)) {
                 return dateTimeClass;
             } else if (mappedClass.equals(java.time.LocalDate.class)) {
                 return java.sql.Date.class;
