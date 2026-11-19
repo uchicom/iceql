@@ -121,6 +121,33 @@ public class JoinTest {
     }
 
     @Test
+    public void testJoinOneOf() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        // only user 1 has notes A, D, G
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).oneOf("A", "D", "G")
+                .where(u.id).exceeds(0);
+        List<UserId> users = q.selectDistinct();
+        assertEquals(1, users.size());
+        assertEquals(1, users.get(0).id);
+        assertTrue(q.toSQL().contains("IN('A', 'D', 'G')"));
+
+        // Iterable and chained variants
+        List<UserId> users2 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).oneOfAnd(Arrays.asList("A", "B", "D", "E"))
+                .on(n.text).oneOf(Arrays.asList("A", "D"))
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(1, users2.size());
+        assertEquals(1, users2.get(0).id);
+    }
+
+    @Test
     public void testJoinNoneOf() throws Exception {
         final UserId u = new UserId();
         final UserNote n = new UserNote();
