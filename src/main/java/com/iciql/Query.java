@@ -713,15 +713,20 @@ public class Query<T> {
     }
 
     public Query<T> where(And<T> conditions) {
-        whereTrue();
-        addConditionToken(conditions.where.query);
+        addNestedWhere(conditions.where.query);
         return this;
     }
 
     public Query<T> where(Or<T> conditions) {
-        whereFalse();
-        addConditionToken(conditions.where.query);
+        addNestedWhere(conditions.where.query);
         return this;
+    }
+
+    private void addNestedWhere(Query<T> nested) {
+        // the leading conjunction of the nested conditions is skipped in appendWhere()
+        addConditionToken(ConditionOpenClose.OPEN);
+        addConditionToken(nested);
+        addConditionToken(ConditionOpenClose.CLOSE);
     }
 
     public QueryWhere<T> whereTrue() {
@@ -1072,9 +1077,14 @@ public class Query<T> {
         if (!conditions.isEmpty()) {
             stat.appendSQL(" WHERE ");
 
-            boolean skipNextConjunction = false;
+            // a leading conjunction (e.g. where(Or) or an OR first) is skipped
+            boolean skipNextConjunction = true;
 
             for (Token token : conditions) {
+
+                if (skipNextConjunction && !(token instanceof ConditionAndOr)) {
+                    skipNextConjunction = false;
+                }
 
                 if (skipNextConjunction && token instanceof ConditionAndOr) {
                     skipNextConjunction = false;

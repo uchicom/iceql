@@ -162,14 +162,12 @@ public class NestedConditionsTest {
         String Customer = db.getDialect().prepareTableName(null, "Customer");
         String customerId = db.getDialect().prepareColumnName("customerId");
         String region = db.getDialect().prepareColumnName("region");
-        String trueValue = db.getDialect().prepareStringParameter(true);
-        String falseValue = db.getDialect().prepareStringParameter(false);
 
         final Customer model = new Customer();
 
         assertEquals(
-                String.format("SELECT * FROM %s WHERE (%s) AND %s = '0001' AND ( %s = 'CA' OR %s = 'LA' )",
-                        Customer, trueValue, customerId, region, region),
+                String.format("SELECT * FROM %s WHERE ( %s = '0001' AND ( %s = 'CA' OR %s = 'LA' ) )",
+                        Customer, customerId, region, region),
 
                 db.from(model).where(new And<Customer>(db, model) {{
 
@@ -184,8 +182,8 @@ public class NestedConditionsTest {
                         .toSQL());
 
         assertEquals(
-                String.format("SELECT * FROM %s WHERE (%s) OR %s = '0001' OR ( %s = '0002' AND %s = 'LA' )",
-                        Customer, falseValue, customerId, customerId, region),
+                String.format("SELECT * FROM %s WHERE ( %s = '0001' OR ( %s = '0002' AND %s = 'LA' ) )",
+                        Customer, customerId, customerId, region),
 
                 db.from(model).where(new Or<Customer>(db, model) {{
 
@@ -201,8 +199,8 @@ public class NestedConditionsTest {
                         .toSQL());
 
         assertEquals(
-                String.format("SELECT * FROM %s WHERE (%s) OR ( %s = '0001' AND %s = 'WA' ) OR ( %s = '0002' AND %s = 'LA' )",
-                        Customer, falseValue, customerId, region, customerId, region),
+                String.format("SELECT * FROM %s WHERE ( ( %s = '0001' AND %s = 'WA' ) OR ( %s = '0002' AND %s = 'LA' ) )",
+                        Customer, customerId, region, customerId, region),
 
                 db.from(model).where(new Or<Customer>(db, model) {{
 
