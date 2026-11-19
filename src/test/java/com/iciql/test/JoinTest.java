@@ -19,6 +19,7 @@ package com.iciql.test;
 import com.iciql.Db;
 import com.iciql.Iciql.IQColumn;
 import com.iciql.Iciql.IQTable;
+import com.iciql.Query;
 import com.iciql.QueryWhere;
 import org.junit.After;
 import org.junit.Before;
@@ -288,6 +289,43 @@ public class JoinTest {
         } else {
             assertEquals("SELECT * FROM UserId WHERE id in (SELECT userId FROM UserNote WHERE userId > 0 )", q.toSQL());
         }
+    }
+
+    @Test
+    public void testSecondAndThirdTableSameClass() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+        final UserNote m = new UserNote();
+        final UserId u2 = new UserId();
+
+        Query<UserId> q0 = db.from(u);
+        QueryWhere<UserId> last = q0
+                .innerJoin(n).on(n.userId).is(u.id)
+                .leftJoin(m).on(m.userId).is(u.id).and(m.text).noneOf(Arrays.asList("A", "B"))
+                .leftJoin(u2).on(u2.id).is(u.id)
+                .where(n.text).is("D")
+                .and(m.text).isNotNull()
+                .and(u2.name).isNotNull();
+        String expected = last.toSQL();
+        assertTrue(expected, !expected.matches("(?s).*(ON|AND) \\d+ .*"));
+        assertEquals(expected, q0.toSQL());
+    }
+
+    @Test
+    public void testToSQLOnOriginalQuery() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+        final UserNote m = new UserNote();
+
+        Query<UserId> q0 = db.from(u);
+        QueryWhere<UserId> last = q0
+                .innerJoin(n).on(n.userId).is(u.id)
+                .leftJoin(m).on(m.userId).is(u.id).and(m.text).noneOf(Arrays.asList("A", "B"))
+                .where(n.text).oneOf(Arrays.asList("C", "D"))
+                .and(m.id).isNull();
+        String expected = last.toSQL();
+        assertTrue(expected, !expected.matches("(?s).*(ON|AND) \\d+ .*"));
+        assertEquals(expected, q0.toSQL());
     }
 
     @IQTable

@@ -50,8 +50,8 @@ public class Query<T> {
     private ArrayList<UpdateColumn> updateColumnDeclarations = Utils.newArrayList();
     private int conditionDepth = 0;
     private ArrayList<SelectTable<T>> joins = Utils.newArrayList();
-    private final IdentityHashMap<Object, SelectColumn<T>> aliasMap = Utils.newIdentityHashMap();
-    private final HashMap<Class<?>, Integer> enumUsage = new HashMap<>();
+    private final IdentityHashMap<Object, SelectColumn<T>> aliasMap;
+    private final HashMap<Class<?>, Integer> enumUsage;
     private ArrayList<OrderExpression<T>> orderByList = Utils.newArrayList();
     private ArrayList<Object> groupByExpressions = Utils.newArrayList();
     private long limit;
@@ -64,8 +64,8 @@ public class Query<T> {
         this.updateColumnDeclarations = q.updateColumnDeclarations;
         this.conditionDepth = q.conditionDepth;
         this.joins = q.joins;
-        this.aliasMap.putAll(q.aliasMap);
-        this.enumUsage.putAll(q.enumUsage);
+        this.aliasMap = q.aliasMap;
+        this.enumUsage = q.enumUsage;
         this.orderByList = q.orderByList;
         this.groupByExpressions = q.groupByExpressions;
         this.limit = q.limit;
@@ -74,6 +74,8 @@ public class Query<T> {
 
     private Query(Db db) {
         this.db = db;
+        this.aliasMap = Utils.newIdentityHashMap();
+        this.enumUsage = new HashMap<>();
     }
 
     /**
