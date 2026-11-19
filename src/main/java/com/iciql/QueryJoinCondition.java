@@ -82,6 +82,26 @@ public class QueryJoinCondition<T, A> {
     }
 
     @SafeVarargs
+    public final Query<T> oneOf(A... a) {
+        return oneOf(Utils.newArrayIterable(a));
+    }
+
+    public Query<T> oneOf(Iterable<A> i) {
+        join.addConditionToken(new Condition<A>(x, i, CompareType.IN));
+        return query;
+    }
+
+    @SafeVarargs
+    public final QueryJoin<T> oneOfAnd(A... a) {
+        return oneOfAnd(Utils.newArrayIterable(a));
+    }
+
+    public QueryJoin<T> oneOfAnd(Iterable<A> i) {
+        join.addConditionToken(new Condition<A>(x, i, CompareType.IN));
+        return new QueryJoin<T>(query, join);
+    }
+
+    @SafeVarargs
     public final Query<T> noneOf(A... a) {
         return noneOf(Utils.newArrayIterable(a));
     }
