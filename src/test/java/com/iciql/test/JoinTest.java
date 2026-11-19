@@ -189,6 +189,38 @@ public class JoinTest {
     }
 
     @Test
+    public void testJoinIsNot() throws Exception {
+        final UserId u = new UserId();
+        final UserNote n = new UserNote();
+
+        QueryWhere<UserId> q = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNot("A")
+                .where(u.id).exceeds(0);
+        assertTrue(q.toSQL().contains("<>"));
+        assertEquals(3, q.selectDistinct().size());
+
+        // chained variant: user 1 only has A, D, G so it disappears
+        List<UserId> users = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(n.text).isNotAnd("A")
+                .on(n.text).isNotAnd("D")
+                .on(n.text).isNot("G")
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(2, users.size());
+
+        // primitive variant
+        List<UserId> users2 = db.from(u)
+                .innerJoin(n)
+                .on(u.id).isAnd(n.userId)
+                .on(u.id).isNot(1)
+                .where(u.id).exceeds(0).selectDistinct();
+        assertEquals(2, users2.size());
+    }
+
+    @Test
     public void testJoinNoneOf() throws Exception {
         final UserId u = new UserId();
         final UserNote n = new UserNote();
