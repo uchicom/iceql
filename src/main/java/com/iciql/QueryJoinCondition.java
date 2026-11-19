@@ -81,6 +81,26 @@ public class QueryJoinCondition<T, A> {
         return query;
     }
 
+    public Query<T> isNull() {
+        join.addConditionToken(new Condition<A>(x, CompareType.IS_NULL));
+        return query;
+    }
+
+    public QueryJoin<T> isNullAnd() {
+        join.addConditionToken(new Condition<A>(x, CompareType.IS_NULL));
+        return new QueryJoin<T>(query, join);
+    }
+
+    public Query<T> isNotNull() {
+        join.addConditionToken(new Condition<A>(x, CompareType.IS_NOT_NULL));
+        return query;
+    }
+
+    public QueryJoin<T> isNotNullAnd() {
+        join.addConditionToken(new Condition<A>(x, CompareType.IS_NOT_NULL));
+        return new QueryJoin<T>(query, join);
+    }
+
     @SafeVarargs
     public final Query<T> oneOf(A... a) {
         return oneOf(Utils.newArrayIterable(a));
