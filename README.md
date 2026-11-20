@@ -1,10 +1,16 @@
-iciql
-=================
+orz
+===
 
-[![Maven Central](http://img.shields.io/maven-central/v/com.gitblit.iciql/iciql.svg)](http://search.maven.org/#search|ga|1|com.gitblit.iciql)
-[![Maven Central](https://img.shields.io/github/license/gitblit/iciql.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+> **Fork notice**: orz is a fork of [gitblit/iciql](https://github.com/gitblit/iciql) **2.2.1** (Apache License 2.0), originally derived from H2 JaQu.
+> Versioning restarts at 0.0.1 and is independent of upstream iciql versions.
+> The upstream PRs were left unattended, so this project restarts as `com.uchicom.orz`.
+> The Java package is now `com.uchicom.orz` and the Maven artifact is `com.uchicom:orz`.
+> See [CHANGELOG.md](CHANGELOG.md) and [NOTICE](NOTICE) for the modifications.
 
-iciql **is**...
+[![Maven Central](https://img.shields.io/maven-central/v/com.uchicom/orz.svg)](https://search.maven.org/artifact/com.uchicom/orz)
+[![Maven Central](https://img.shields.io/github/license/uchicom/orz.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+orz **is**...
 
 - a model-based, database access wrapper for JDBC
 - for modest database schemas and basic statement generation
@@ -13,7 +19,7 @@ iciql **is**...
 - pronounced *icicle* (although it could be French: *ici ql* - here query language)
 - a friendly fork of the H2 [JaQu](http://h2database.com/html/jaqu.html) project
 
-iciql **is not**...
+orz **is not**...
 
 - a complete alternative to JDBC
 - designed to compete with more powerful database query tools like [jOOQ](http://jooq.sourceforge.net) or [QueryDSL](http://source.mysema.com/display/querydsl/Querydsl)
@@ -33,35 +39,34 @@ Support for others is possible and may only require creating a simple "dialect" 
 Downloading
 -----------
 
-As of 2.0.0 iciql is now distributed through Maven Central and it's coordinates have changed slightly.
+orz is distributed through Maven Central (since 0.0.1).
 
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.gitblit.iciql</groupId>
-        <artifactId>iciql</artifactId>
-        <version>2.2.0</version>
+        <groupId>com.uchicom</groupId>
+        <artifactId>orz</artifactId>
+        <version>0.0.1</version>
     </dependency>
 </dependencies>
 ```
 
-Older releases are available from the [Iciql Maven Repository](http://gitblit.github.io/iciql/maven/). 
 
 License
 -------
-iciql is distributed under the terms of the [Apache Software Foundation license, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).<br/>
+orz is distributed under the terms of the [Apache Software Foundation license, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).<br/>
 The text of the license is included in the file LICENSE in the root of the project.
 
 Java Runtime Requirement
 -------
-iciql requires a Java 6 Runtime Environment (JRE) or a Java 6 Development Kit (JDK).
+orz requires a Java 8 Runtime Environment (JRE) or a Java 8 Development Kit (JDK).
  
 Getting help
 -------
-Read the online documentation available at the [iciql website](http://iciql.com)<br/>
-Issues & source code @ [GitHub](http://github.com/gitblit/iciql)
+Read the online documentation of the upstream project at the [iciql website](http://iciql.com)<br/>
+Issues & source code @ [GitHub](https://github.com/uchicom/orz)
 
-Building iciql
+Building orz
 ----------------
 
 You may use Maven to build the project:
