@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.uchicom</groupId>
-	<artifactId>iciql</artifactId>
-	<version>2.2.1.11</version>
-	<name>Iciql</name>
+	<artifactId>orz</artifactId>
+	<version>0.0.1</version>
+	<name>Orz</name>
 	<description>a model-based database access wrapper for JDBC</description>
-	<url>http://iciql.com</url>
+	<url>https://github.com/uchicom/orz</url>
 	<inceptionYear>2011</inceptionYear>
 
 	<licenses>
@@ -20,9 +20,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git@github.com:uchicom/iciql.git</connection>
-		<developerConnection>scm:git:git@github.com:uchicom/iciql.git</developerConnection>
-		<url>https://github.com/uchicom/iciql</url>
+		<connection>scm:git:git@github.com:uchicom/orz.git</connection>
+		<developerConnection>scm:git:git@github.com:uchicom/orz.git</developerConnection>
+		<url>https://github.com/uchicom/orz</url>
 		<tag>java1.8</tag>
 	</scm>
 
@@ -186,7 +186,7 @@
 				<version>2.19.1</version>
 				<configuration>
 					<includes>
-						<include>com/iciql/test/IciqlSuite.java</include>
+						<include>com/uchicom/orz/test/IciqlSuite.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -200,7 +200,7 @@
 					<arguments>
 						<argument>-classpath</argument>
 						<classpath />
-						<argument>com.iciql.test.IciqlSuite</argument>
+						<argument>com.uchicom.orz.test.IciqlSuite</argument>
 					</arguments>
 				</configuration>
 			</plugin>

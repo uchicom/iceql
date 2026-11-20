@@ -1,6 +1,10 @@
-iciql
+orz
 Copyright 2004-2011 H2 Group
 Copyright 2011 James Moger
+
+orz is a fork of iciql (https://github.com/gitblit/iciql), licensed under
+the Apache License, Version 2.0. Modified by uchicom: package renamed from
+com.iciql to com.uchicom.orz and artifact renamed to orz. See CHANGELOG.md.
 
 This is an aggregated NOTICE file for the projects included
 in this distribution or linked to by this distribution.

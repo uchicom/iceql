@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### [0.0.1] - Unreleased
+
+orz is a fork of gitblit/iciql 2.2.1. Versioning restarts at 0.0.1 and is independent of upstream.
+
+#### Changed
+
+- Project renamed from iciql to orz (fork of https://github.com/gitblit/iciql, Apache License 2.0) #17
+- Java package changed from `com.iciql` to `com.uchicom.orz`
+- Maven coordinates changed to `com.uchicom:orz`
+- Added copyright and modification notices (Apache License 2.0 section 4) to all modified source files
+- README coordinates and badges now describe the planned 0.0.1 release of `com.uchicom:orz`
+- Class names and the `iciql.properties` resource name are unchanged
+
 ### [2.2.1] - 2021-05-02
 
 #### Fixed
