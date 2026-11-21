@@ -46,7 +46,7 @@ orz is distributed through Maven Central (since 0.0.1).
     <dependency>
         <groupId>com.uchicom</groupId>
         <artifactId>orz</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </dependency>
 </dependencies>
 ```

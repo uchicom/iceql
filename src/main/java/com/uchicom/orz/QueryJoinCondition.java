@@ -93,21 +93,9 @@ public class QueryJoinCondition<T, A> {
         return chain();
     }
 
-    @Deprecated
-    public QueryJoin<T> isNullAnd() {
-        join.addConditionToken(new Condition<A>(x, CompareType.IS_NULL));
-        return new QueryJoin<T>(query, join);
-    }
-
     public QueryJoinChain<T> isNotNull() {
         join.addConditionToken(new Condition<A>(x, CompareType.IS_NOT_NULL));
         return chain();
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotNullAnd() {
-        join.addConditionToken(new Condition<A>(x, CompareType.IS_NOT_NULL));
-        return new QueryJoin<T>(query, join);
     }
 
     @SafeVarargs
@@ -121,18 +109,6 @@ public class QueryJoinCondition<T, A> {
     }
 
     @SafeVarargs
-    @Deprecated
-    public final QueryJoin<T> oneOfAnd(A... a) {
-        return oneOfAnd(Utils.newArrayIterable(a));
-    }
-
-    @Deprecated
-    public QueryJoin<T> oneOfAnd(Iterable<A> i) {
-        join.addConditionToken(new Condition<A>(x, i, CompareType.IN));
-        return new QueryJoin<T>(query, join);
-    }
-
-    @SafeVarargs
     public final QueryJoinChain<T> noneOf(A... a) {
         return noneOf(Utils.newArrayIterable(a));
     }
@@ -140,70 +116,6 @@ public class QueryJoinCondition<T, A> {
     public QueryJoinChain<T> noneOf(Iterable<A> i) {
         join.addConditionToken(new Condition<A>(x, i, CompareType.NOT_IN));
         return chain();
-    }
-
-    @SafeVarargs
-    @Deprecated
-    public final QueryJoin<T> noneOfAnd(A... a) {
-        return noneOfAnd(Utils.newArrayIterable(a));
-    }
-
-    @Deprecated
-    public QueryJoin<T> noneOfAnd(Iterable<A> i) {
-        join.addConditionToken(new Condition<A>(x, i, CompareType.NOT_IN));
-        return new QueryJoin<T>(query, join);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(boolean y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(byte y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(short y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(int y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(long y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(float y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(double y) {
-        return addPrimitiveAnd(y);
-    }
-
-    @SuppressWarnings("unchecked")
-    private QueryJoin<T> addPrimitiveAnd(Object o) {
-        A alias = query.getPrimitiveAliasByValue((A) o);
-        if (alias == null) {
-            join.addConditionToken(new Condition<A>(x, (A) o, CompareType.EQUAL));
-        } else {
-            join.addConditionToken(new Condition<A>(x, alias, CompareType.EQUAL));
-        }
-        return new QueryJoin<T>(query, join);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isAnd(A y) {
-        join.addConditionToken(new Condition<A>(x, y, CompareType.EQUAL));
-        return new QueryJoin<T>(query, join);
     }
 
     public QueryJoinChain<T> isNot(boolean y) {
@@ -248,57 +160,5 @@ public class QueryJoinCondition<T, A> {
     public QueryJoinChain<T> isNot(A y) {
         join.addConditionToken(new Condition<A>(x, y, CompareType.NOT_EQUAL));
         return chain();
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(boolean y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(byte y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(short y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(int y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(long y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(float y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(double y) {
-        return addPrimitiveNotAnd(y);
-    }
-
-    @SuppressWarnings("unchecked")
-    private QueryJoin<T> addPrimitiveNotAnd(Object o) {
-        A alias = query.getPrimitiveAliasByValue((A) o);
-        if (alias == null) {
-            join.addConditionToken(new Condition<A>(x, (A) o, CompareType.NOT_EQUAL));
-        } else {
-            join.addConditionToken(new Condition<A>(x, alias, CompareType.NOT_EQUAL));
-        }
-        return new QueryJoin<T>(query, join);
-    }
-
-    @Deprecated
-    public QueryJoin<T> isNotAnd(A y) {
-        join.addConditionToken(new Condition<A>(x, y, CompareType.NOT_EQUAL));
-        return new QueryJoin<T>(query, join);
     }
 }

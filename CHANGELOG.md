@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### [0.0.2] - Unreleased
+
+#### Removed
+
+- Deprecated methods of `QueryJoinCondition` (`isAnd`, `isNotAnd`, `isNullAnd`, `isNotNullAnd`, `oneOfAnd`, `noneOfAnd`). Use `is`, `isNot`, `isNull`, `isNotNull`, `oneOf`, `noneOf` followed by `and(...)` instead #42
+
 ### [0.0.1] - Unreleased
 
 orz is a fork of gitblit/iciql 2.2.1. Versioning restarts at 0.0.1 and is independent of upstream.
