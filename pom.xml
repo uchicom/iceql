@@ -6,7 +6,7 @@
 
 	<groupId>com.uchicom</groupId>
 	<artifactId>orz</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>Orz</name>
 	<description>a model-based database access wrapper for JDBC</description>
 	<url>https://github.com/uchicom/orz</url>

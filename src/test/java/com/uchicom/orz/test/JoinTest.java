@@ -114,8 +114,8 @@ public class JoinTest {
 
         QueryWhere<UserId> q = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(u.name).is("Dick")
+                .on(u.id).is(n.userId)
+                .and(u.name).is("Dick")
                 .where(u.id).is(2).or(u.id).is(1);
 
         List<UserId> users = q.selectDistinct();
@@ -159,8 +159,8 @@ public class JoinTest {
         // only user 1 has notes A, D, G
         QueryWhere<UserId> q = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).oneOf("A", "D", "G")
+                .on(u.id).is(n.userId)
+                .and(n.text).oneOf("A", "D", "G")
                 .where(u.id).exceeds(0);
         List<UserId> users = q.selectDistinct();
         assertEquals(1, users.size());
@@ -170,9 +170,9 @@ public class JoinTest {
         // Iterable and chained variants
         List<UserId> users2 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).oneOfAnd(Arrays.asList("A", "B", "D", "E"))
-                .on(n.text).oneOf(Arrays.asList("A", "D"))
+                .on(u.id).is(n.userId)
+                .and(n.text).oneOf(Arrays.asList("A", "B", "D", "E"))
+                .and(n.text).oneOf(Arrays.asList("A", "D"))
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(1, users2.size());
         assertEquals(1, users2.get(0).id);
@@ -186,8 +186,8 @@ public class JoinTest {
         // no note text is null: nothing joins
         QueryWhere<UserId> q = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNull()
+                .on(u.id).is(n.userId)
+                .and(n.text).isNull()
                 .where(u.id).exceeds(0);
         assertEquals(0, q.selectDistinct().size());
         assertTrue(q.toSQL().contains("IS NULL"));
@@ -195,8 +195,8 @@ public class JoinTest {
         // all note texts are not null: all users join
         QueryWhere<UserId> q2 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNotNull()
+                .on(u.id).is(n.userId)
+                .and(n.text).isNotNull()
                 .where(u.id).exceeds(0);
         assertEquals(3, q2.selectDistinct().size());
         assertTrue(q2.toSQL().contains("IS NOT NULL"));
@@ -204,17 +204,17 @@ public class JoinTest {
         // chained variants
         List<UserId> users3 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNotNullAnd()
-                .on(n.text).isNull()
+                .on(u.id).is(n.userId)
+                .and(n.text).isNotNull()
+                .and(n.text).isNull()
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(0, users3.size());
 
         List<UserId> users4 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNullAnd()
-                .on(n.text).isNotNull()
+                .on(u.id).is(n.userId)
+                .and(n.text).isNull()
+                .and(n.text).isNotNull()
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(0, users4.size());
     }
@@ -226,8 +226,8 @@ public class JoinTest {
 
         QueryWhere<UserId> q = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNot("A")
+                .on(u.id).is(n.userId)
+                .and(n.text).isNot("A")
                 .where(u.id).exceeds(0);
         assertTrue(q.toSQL().contains("<>"));
         assertEquals(3, q.selectDistinct().size());
@@ -235,18 +235,18 @@ public class JoinTest {
         // chained variant: user 1 only has A, D, G so it disappears
         List<UserId> users = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).isNotAnd("A")
-                .on(n.text).isNotAnd("D")
-                .on(n.text).isNot("G")
+                .on(u.id).is(n.userId)
+                .and(n.text).isNot("A")
+                .and(n.text).isNot("D")
+                .and(n.text).isNot("G")
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(2, users.size());
 
         // primitive variant
         List<UserId> users2 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(u.id).isNot(1)
+                .on(u.id).is(n.userId)
+                .and(u.id).isNot(1)
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(2, users2.size());
     }
@@ -259,8 +259,8 @@ public class JoinTest {
         // user 1 only has notes A, D, G so it must not be joined
         QueryWhere<UserId> q = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).noneOf("A", "D", "G")
+                .on(u.id).is(n.userId)
+                .and(n.text).noneOf("A", "D", "G")
                 .where(u.id).exceeds(0);
         List<UserId> users = q.selectDistinct();
         assertEquals(2, users.size());
@@ -269,9 +269,9 @@ public class JoinTest {
         // Iterable and chained variants
         List<UserId> users2 = db.from(u)
                 .innerJoin(n)
-                .on(u.id).isAnd(n.userId)
-                .on(n.text).noneOfAnd(Arrays.asList("A", "D", "G"))
-                .on(n.text).noneOf(Arrays.asList("B", "E", "H"))
+                .on(u.id).is(n.userId)
+                .and(n.text).noneOf(Arrays.asList("A", "D", "G"))
+                .and(n.text).noneOf(Arrays.asList("B", "E", "H"))
                 .where(u.id).exceeds(0).selectDistinct();
         assertEquals(1, users2.size());
         assertEquals(3, users2.get(0).id);
